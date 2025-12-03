@@ -1,4 +1,3 @@
-import tensorflow as tf
 from keras import layers, models
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
