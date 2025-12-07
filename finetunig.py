@@ -2,7 +2,7 @@ import pandas as pd
 import re
 from transformers import AutoTokenizer
 import torch
-from torch.utils.data import DataLoader, TensorDataset
+from torch.utils.data import TensorDataset, DataLoader
 from torch.nn.utils.rnn import pad_sequence
 from sklearn.model_selection import train_test_split
 
@@ -28,42 +28,41 @@ def clean_text(text):
     text = re.sub(r'\s+', '', text).strip()
     return text
 
-data['text'] = data["cleaned_text"].apply(clean_text)
-print(data[["text", "label"]].head())
+data['text'] = data["text"].apply(clean_text)
+print(data[['text', 'label']].head())
 
-tokenizer =  AutoTokenizer.from_pretrained("bert-base-uncased")
+tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
 def tokenize_function(text):
-    return tokenizer(text, padding=True, truncation = True, return_tensor = "pt", max_length = 128)
+    return tokenizer(text, padding=True, truncation=True, return_tensor="pt", max_length=128)
 
-data["tokenized"] = data["text"].apply(tokenize_function)
-print(data[["tokenized", "label"]].head())
+data['tokenized'] = data['text'].apply(tokenize_function)
+print(data[['tokenized', 'label']].head())
 
 print(data.isnull().sum())
+
 data = data.dropna()
-data["text"].fillna('missing', inplace=True)
+data['text'].fillna('missing', inplace=True)
 
-input_id_list = [token['input_ids'].squeeze() for token in data['tokenized']]
-attention_mask_list = [token['attention_mask'].squeeze() for token in data['tokenized']]
+input_ids_list = [token['input_ids'].squeeze() for token in data['tokenized']]
+attention_masks_list = [token['attention_mask'].squeeze() for token in data['tokenized']]
 
-input_ids = pad_sequence(input_id_list, batch_first=True, padding_value=0)
-attention_mask = pad_sequence(attention_mask_list, batch_first=True, padding_value=0)
+input_ids = pad_sequence(input_ids_list, batch_first=True, padding_value=0)
+attention_mask = pad_sequence(attention_masks_list, batch_first=True, padding_value=0)
 
 labels = torch.tensor([
-    0 if label == "negative" else 1 if label == "neutral" else 2
+    0 if label == 'negative' else 1 if label == 'neutral' else 2
     for label in data['label']
 ], dtype=torch.long)
 
-dataset = TensorDataset(input_ids, attention_mask, labels)
-dataloader = DataLoader(dataset, batch_size=16, shuffle=True)
-print("DataLoader created successfully")
+datasets = TensorDataset(input_ids, attention_mask, labels)
+dataloader = DataLoader (datasets, batch_size=16, shuffle=True)
+
+print('Dataloader created successfully!')
 
 train_inputs, test_inputs, train_labels, test_labels = train_test_split(
-    input_ids, labels,  test_size=0.2, random_state=42
-)
+    input_ids, labels, test_size=0.2, random_state=42)
 
-train_datasets = TensorDataset(train_inputs, train_labels)
-test_datasets = TensorDataset(test_inputs, test_labels)
-train_loader = DataLoader(train_datasets, batch_size=16, shuffle=True)
-test_loader = DataLoader(test_datasets, batch_size=16)
-
-print("Data splitting successfully")
+train_dataset = TensorDataset(train_inputs, train_labels)
+test_dataset = TensorDataset(test_inputs, test_labels)
+train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=16, shuffle=True)
