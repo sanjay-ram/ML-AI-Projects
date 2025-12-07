@@ -1,9 +1,9 @@
 import pandas as pd
 import re
-from transformers import AutoTokenizer
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 from torch.nn.utils.rnn import pad_sequence
+from transformers import AutoTokenizer
 from sklearn.model_selection import train_test_split
 
 data_dict = {
@@ -23,46 +23,48 @@ data = pd.DataFrame(data_dict)
 
 def clean_text(text):
     text = text.lower()
-    text = re.sub(r'https\S+', '', text)
+    text = re.sub(r'http\S+', '', text)
     text = re.sub(r'[^\w\s]', '', text)
-    text = re.sub(r'\s+', '', text).strip()
+    text = re.sub(r'\s+', ' ', text).strip()
     return text
 
-data['text'] = data["text"].apply(clean_text)
-print(data[['text', 'label']].head())
+data['cleaned_text'] = data['text'].apply(clean_text)
+print(data[['cleaned_text', 'label']].head())
 
-tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
+
+tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
 def tokenize_function(text):
-    return tokenizer(text, padding=True, truncation=True, return_tensor="pt", max_length=128)
+    return tokenizer(text, padding=True, truncation=True, return_tensors="pt", max_length=128)
 
-data['tokenized'] = data['text'].apply(tokenize_function)
+data['tokenized'] = data['cleaned_text'].apply(tokenize_function)
 print(data[['tokenized', 'label']].head())
 
 print(data.isnull().sum())
-
 data = data.dropna()
-data['text'].fillna('missing', inplace=True)
+data['cleaned_text'].fillna('missing', inplace=True)
 
 input_ids_list = [token['input_ids'].squeeze() for token in data['tokenized']]
 attention_masks_list = [token['attention_mask'].squeeze() for token in data['tokenized']]
 
 input_ids = pad_sequence(input_ids_list, batch_first=True, padding_value=0)
-attention_mask = pad_sequence(attention_masks_list, batch_first=True, padding_value=0)
+attention_masks = pad_sequence(attention_masks_list, batch_first=True, padding_value=0)
 
 labels = torch.tensor([
     0 if label == 'negative' else 1 if label == 'neutral' else 2
     for label in data['label']
 ], dtype=torch.long)
 
-datasets = TensorDataset(input_ids, attention_mask, labels)
-dataloader = DataLoader (datasets, batch_size=16, shuffle=True)
-
-print('Dataloader created successfully!')
+dataset = TensorDataset(input_ids, attention_masks, labels)
+dataloader = DataLoader(dataset, batch_size=16, shuffle=True)
+print("DataLoader created successfully!")
 
 train_inputs, test_inputs, train_labels, test_labels = train_test_split(
-    input_ids, labels, test_size=0.2, random_state=42)
+    input_ids, labels, test_size=0.2, random_state=42
+)
 
 train_dataset = TensorDataset(train_inputs, train_labels)
 test_dataset = TensorDataset(test_inputs, test_labels)
-train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
-test_loader = DataLoader(test_dataset, batch_size=16, shuffle=True)
+train_dataloader = DataLoader(train_dataset, batch_size=16, shuffle=True)
+test_dataloader = DataLoader(test_dataset, batch_size=16, shuffle=False)
+
+print("Train and test DataLoaders created successfully!")
