@@ -5,6 +5,9 @@ from torch.utils.data import TensorDataset, DataLoader
 from torch.nn.utils.rnn import pad_sequence
 from transformers import AutoTokenizer
 from sklearn.model_selection import train_test_split
+import nltk
+from nltk.corpus import wordnet
+import random
 
 data_dict = {
     "text": [
@@ -42,6 +45,20 @@ print(data[['tokenized', 'label']].head())
 print(data.isnull().sum())
 data = data.dropna()
 data['cleaned_text'].fillna('missing', inplace=True)
+
+nltk.download('wordnet')
+def synom_replacement(word):
+    synonyms = wordnet.synets(word)
+    if synonyms:
+        return synonyms[0].lemmas()[0].name()
+    return word
+
+def augment_text(text):
+    words = text.split()
+    augmented_words = [synom_replacement(word) if random.random() > 0.8 else word for word in words]
+    return ' '.join(augmented_words)
+
+data['augmented_text'] = data['cleaned_text'].apply(augment_text)
 
 input_ids_list = [token['input_ids'].squeeze() for token in data['tokenized']]
 attention_masks_list = [token['attention_mask'].squeeze() for token in data['tokenized']]
