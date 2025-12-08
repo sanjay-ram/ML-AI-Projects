@@ -48,7 +48,7 @@ data['cleaned_text'].fillna('missing', inplace=True)
 
 nltk.download('wordnet')
 def synom_replacement(word):
-    synonyms = wordnet.synets(word)
+    synonyms = wordnet.synsets(word)
     if synonyms:
         return synonyms[0].lemmas()[0].name()
     return word
