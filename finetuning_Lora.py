@@ -56,8 +56,31 @@ trainer.train()
 results = trainer.evaluate(eval_dataset=test_data)
 print(f"Test Accuracy: {results['eval_accuracy']}")
 
-# Example of adjusting the rank in LoRA
 from lora import adjust_lora_rank
+# Adjust the rank for LoRA
+adjust_lora_rank(model, rank=4)  # Experiment with different rank values
 
-# Set a lower rank for fine-tuning, experiment with values for optimal performance
-adjust_lora_rank(model, rank=2)
+# Experiment with additional parameters
+alpha = 16 # Scaling factor for LoRA
+dropout_rate = 0.1 # Dropout rate for regularization
+use_bias = True # Whether to include bias in the model layers
+
+# Example of modifying these parameters
+if hasattr(model.config, 'alpha'):
+    model.config.alpha = alpha
+else:
+    print("Warning: model.config does not have attribute 'alpha'")
+
+if hasattr(model.config, 'hidden_dropout_prob'):
+    model.config.hidden_dropout_prob = dropout_rate
+else:
+    print("Warning: model.config does not have attribute 'hidden_dropout_prob'")
+
+if hasattr(model.config, 'use_bias'):
+    model.config.use_bias = use_bias
+else:
+    print("Warning: model.config does not have attribute 'use_bias'")
+
+print(f"Alpha: {alpha}")
+print(f"Dropout Rate: {dropout_rate}")
+print(f"Using Bias: {use_bias}")
