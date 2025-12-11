@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 df = pd.read_csv('my_dataset.csv')
 
 train_data, temp_data = train_test_split(df, test_size=0.5, random_state=42)
-val_data, test_data = train_test_split(df, test_size=0.3, random_state=42)
+val_data, test_data = train_test_split(temp_data, test_size=0.3, random_state=42)
 
 print(f"Training set size: {len(train_data)}")
 print(f"Validation set size: {len(val_data)}")
