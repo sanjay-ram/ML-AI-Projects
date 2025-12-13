@@ -8,37 +8,54 @@ nlp = pipeline('question-answering')
 user_input = input("Please describe your problem: ")
 
 for issue, details in knowledge_base.items():
-    if details["sympthom"].lower() in user_input.lower():
-        print(f"Possible solution: {details['solution']}")
+    if details["symptom"].lower() in user_input.lower():
+        print(f"\nPossible solution: {details['solution']}")
         break
     else:
         print("No matching issue found in the knowledge base.")
 
 def diagnose_network_issue():
-    print("Have you restarted your router?")
+    print("\nHave you restarted your router?")
     response = input("Yes/No: ").strip().lower()
     if response == "no":
         print("Please restart your router and check again.")
     else:
         print("Try resetting your network settings or contacting your provider.")
 
+def diagnose_app_issue():
+    print("\nHave you update the app or restarted your computer?")
+    response = input("Yes/No: ").strip().lower()
+    if response == "no":
+        print("Please update the app or restart your computer, then check again.")
+    else:
+        print("Try resetting your app settings!")
+
+if "app" in user_input.lower():
+    diagnose_app_issue()
+
 if "internet" in user_input.lower():
     diagnose_network_issue()
 
 def automate_fix(issue):
     if issue == "slow_internet":
-        print("Resetting network settings...")
-        # Simulated network reset
+        print("\nResetting network settings...")
         print("Network settings have been reset. Please check your connection.")
+    elif issue == "crashing_app":
+        app_name = input("\nGive your apps name and version please: ")
+        print("\nResetting app settings...")
+        print(f"App settings have been reset. Please check your {app_name}")
     else:
-        print("Automation is not available for this issue.")
+        print("\nAutomation is not available for this issue.")
 
 
 if "internet" in user_input.lower():
     automate_fix("slow_internet")
 
+if "app" in user_input.lower():
+    automate_fix("crashing_app")
+
 def collect_feedback():
-    feedback = input("Did this solution resolve your issue? (Yes/No): ").strip().lower()
+    feedback = input("\nDid this solution resolve your issue? (Yes/No): ").strip().lower()
     if feedback == "yes":
         print("Great! Your feedback has been recorded.")
     else:
