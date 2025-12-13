@@ -23,7 +23,7 @@ def diagnose_network_issue():
         print("Try resetting your network settings or contacting your provider.")
 
 def diagnose_app_issue():
-    print("\nHave you update the app and restarted your computer?")
+    print("\nHave you updated the app to the latest version and restarted your computer?")
     response = input("Yes/No: ").strip().lower()
     if response == "no":
         print("Please update the app or restart your computer, then check again.")
@@ -41,7 +41,7 @@ def automate_fix(issue):
         print("\nResetting network settings...")
         print("Network settings have been reset. Please check your connection.")
     elif issue == "crashing_app":
-        app_name = input("\nGive your apps name and version please: ")
+        app_name = input("\nGive your apps name please: ")
         print("\nResetting app settings...")
         print(f"App settings have been reset. Please check your {app_name}")
     else:
