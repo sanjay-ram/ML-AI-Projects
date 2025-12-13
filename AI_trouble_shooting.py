@@ -23,7 +23,7 @@ def diagnose_network_issue():
         print("Try resetting your network settings or contacting your provider.")
 
 def diagnose_app_issue():
-    print("\nHave you update the app or restarted your computer?")
+    print("\nHave you update the app and restarted your computer?")
     response = input("Yes/No: ").strip().lower()
     if response == "no":
         print("Please update the app or restart your computer, then check again.")
