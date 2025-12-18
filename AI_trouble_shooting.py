@@ -30,11 +30,35 @@ def diagnose_app_issue():
     else:
         print("Try resetting your app settings!")
 
+
+def diagnose_email_issue():
+    print("\nHave you verfiyed email server settings and check your internet connection?")
+    response = input("Yes/No: ").strip().lower()
+    if response == "no":
+        print("Please verfiy the email server settings and check your internet connection.")
+    else:
+        print("Try reverifying the email server settings and rechecking your internet connection.")
+
+def diagnose_printer_issue():
+    print("\nHave you checked the printer connections, restarted the printer?")
+    response = input("Yes/No: ").strip().lower()
+    if response == "no":
+        print("Please check the printer connections, restart the printer, and reinstall drivers if necessary.")
+    else:
+        print("Try rechecking printer connections, restarting the printer.")
+
 if "app" in user_input.lower():
     diagnose_app_issue()
 
 if "internet" in user_input.lower():
     diagnose_network_issue()
+
+
+if "email" in user_input.lower():
+    diagnose_email_issue()
+
+if "printer" in user_input.lower():
+    diagnose_printer_issue()
 
 def automate_fix(issue):
     if issue == "slow_internet":
@@ -44,6 +68,15 @@ def automate_fix(issue):
         app_name = input("\nGive your apps name please: ")
         print("\nResetting app settings...")
         print(f"App settings have been reset. Please check your {app_name}")
+    elif issue == "email_not_working":
+        email = input("\nPlease enter your email here: ")
+        print("\nVerfiying the email server setting...")
+        print("\nChecking the internet connection...")
+        print(f"\nYour email server settings has been verifyed & the internet connection  have been checked and reseted. Please try sending and recieving with your {email}.")
+    elif issue == "printer_not_responding":
+        printer = input("Enter your printers name: ")
+        print("\nRestarting your printer...")
+        print(f"\nYour {printer} has been successfully restarted.")
     else:
         print("\nAutomation is not available for this issue.")
 
@@ -51,14 +84,20 @@ def automate_fix(issue):
 if "internet" in user_input.lower():
     automate_fix("slow_internet")
 
-if "app" in user_input.lower():
+elif "app" in user_input.lower():
     automate_fix("crashing_app")
+
+elif "email" in user_input.lower():
+    automate_fix("email_not_working")
+
+elif "printer" in user_input.lower():
+    automate_fix("printer_not_responding")
 
 def collect_feedback():
     feedback = input("\nDid this solution resolve your issue? (Yes/No): ").strip().lower()
     if feedback == "yes":
-        print("Great! Your feedback has been recorded.")
+        print("\nGreat! Your feedback has been recorded.")
     else:
-        print("We're sorry the issue persists. We'll improve our solution based on your input.")
+        print("\nWe're sorry the issue persists. We'll improve our solution based on your input.")
 
 collect_feedback()

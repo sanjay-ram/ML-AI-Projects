@@ -6,5 +6,13 @@
     "app_crashing": {
         "symptom": "The app keeps crashing on startup.",
         "solution": "Update the app to the latest version and restart your device."
+    },
+    "email_not_working": {
+        "symptom": "Emails are not sending or receiving.",
+        "solution": "Verify email server settings and check your internet connection."
+    },
+    "printer_not_responding": {
+        "symptom": "The printer is not responding.",
+        "solution": "Check printer connections, restart the printer, and reinstall drivers if necessary."
     }
 }
