@@ -5,13 +5,13 @@ import string
 from transformers import pipeline
 import spacy
 
-text = input("You: ")
+text = input("Du: ")
 text.lower()
 text.translate(str.maketrans("", "", string.punctuation))
 tokens = word_tokenize(text)
 taggend_token = nltk.pos_tag(tokens)
 
-nlp = spacy.load("en_core_web_sm")
+nlp = spacy.load("de_core_news_sm")
 doc = nlp(text)
 for ent_ in doc.ents:
     print(ent_.text, ent_.label)
@@ -21,9 +21,9 @@ result = sentiment_analyser(text)
 response = ""
 
 if result[0]['label'] == 'NEGATIVE':
-    response += "I'm sorry for that, "
+    response += "Ich entschuldige mich für, "
 
-summarizer = pipeline("summarization")
+summarizer = pipeline("summarization", model ="facebook/mbart-large-50-many-to-many-mmt")
 summary = summarizer(text, max_length=100, min_length = 50, do_sample=False)
 response += " "
 response = str(response) + str(summary)
